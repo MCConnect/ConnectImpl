@@ -12,7 +12,7 @@ public class Command implements ICommand {
 	private PluginBase owner;
 	private Permission permission;
 
-	private Command(String label, PluginBase owner, Permission permission) {
+	protected Command(String label, PluginBase owner, Permission permission) {
 		this.label = label;
 		this.owner = owner;
 		this.permission = permission;

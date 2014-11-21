@@ -18,4 +18,8 @@ public class ConnectImpl {
 		return ConnectAPI.getServer();
 	}
 
+	public static ILogger staticLogger() {
+		return ConnectAPI.getServer().getLogger();
+	}
+
 }

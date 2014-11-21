@@ -2,6 +2,7 @@ package org.connect.impl.scheduler;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map.Entry;
 
 import org.connect.api.plugin.PluginBase;
 import org.connect.api.scheduler.ConnectRunnable;
@@ -9,7 +10,7 @@ import org.connect.api.scheduler.IScheduler;
 
 public class Scheduler implements IScheduler {
 
-	private HashMap<HashMapFriendlier, PluginBase> tasks = new HashMap<>();
+	private HashMap<Integer, HashMapFriendlier> tasks = new HashMap<>();
 
 	@Override
 	public void cancelAllTasks() {
@@ -18,20 +19,28 @@ public class Scheduler implements IScheduler {
 
 	@Override
 	public void cancelTask(int id) {
-		Iterator<HashMapFriendlier> ks = tasks.keySet().iterator();
-		int i = 0;
-		while (ks.hasNext()) {
-			i++;
-			if (ks.next().getId() == id) {
+		for (Entry<Integer, HashMapFriendlier> pair : tasks.entrySet()) {
+			int fId = pair.getKey();
+			HashMapFriendlier hsf = pair.getValue();
+			
+			if (id == fId) {
+				tasks.remove(fId);
 				return;
 			}
 		}
 	}
 
 	@Override
-	public void cancelTask(PluginBase arg0) {
-		// TODO Auto-generated method stub
-
+	public void cancelTask(PluginBase plugin) {
+		for (Entry<Integer, HashMapFriendlier> pair : tasks.entrySet()) {
+			int fId = pair.getKey();
+			HashMapFriendlier hsf = pair.getValue();
+			
+			if (hsf.getPlugin().getName().equalsIgnoreCase(plugin.getName())) {
+				tasks.remove(fId);
+				return;
+			}
+		}
 	}
 
 	@Override
