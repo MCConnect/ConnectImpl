@@ -12,7 +12,7 @@ public class ConsoleSender extends ConnectImpl implements ICommandSender {
 
 	@Override
 	public void performCommand(String command, String[] args) {
-		
+		getServer().getPluginManager().runCommand(command, this, args);
 	}
 
 	@Override

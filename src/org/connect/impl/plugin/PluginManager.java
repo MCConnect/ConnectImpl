@@ -169,6 +169,10 @@ public class PluginManager extends ConnectImpl implements IPluginManager {
 	@Override
 	public void runCommand(String label, ICommandSender sender, String[] args) {
 		for (ICommand cmd : commands.keySet()) {
+			if (cmd.getLabel().equalsIgnoreCase("help")) {
+				getLogger().i("HELP!");
+				return;
+			}
 			if (cmd.getLabel().equalsIgnoreCase(label)) {
 				cmd.performComand(sender, args);
 				return;

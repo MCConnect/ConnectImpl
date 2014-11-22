@@ -1,6 +1,7 @@
 package org.connect.impl.world;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import org.connect.api.block.IBlock;
 import org.connect.api.world.IChunk;
@@ -16,6 +17,7 @@ public class World implements IWorld {
 	private WorldEnvironment worldEnv;
 	private ArrayList<IChunk> chunks = new ArrayList<>();
 	private IWorldOption worldOption;
+	private UUID uuid;
 
 	public World(IWorldOption worldOption) {
 		this.seed = worldOption.getSeed();
@@ -81,6 +83,11 @@ public class World implements IWorld {
 	@Override
 	public ILocation getSpawn() {
 		return new Location(this, 0, 64, 0);
+	}
+
+	@Override
+	public UUID getUniqueId() {
+		return uuid;
 	}
 
 }

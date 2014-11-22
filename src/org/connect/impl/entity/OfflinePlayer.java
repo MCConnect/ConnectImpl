@@ -29,7 +29,7 @@ public class OfflinePlayer implements IOfflinePlayer {
 
 	@Override
 	public UUID getUniqueId() {
-		return uuid;
+		return null;
 	}
 
 }

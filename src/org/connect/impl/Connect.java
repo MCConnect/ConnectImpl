@@ -16,6 +16,7 @@ import org.connect.api.scheduler.IScheduler;
 import org.connect.api.world.IWorld;
 import org.connect.api.world.IWorldManager;
 import org.connect.impl.entity.ConsoleSender;
+import org.connect.impl.entity.OfflinePlayer;
 import org.connect.impl.permissions.PermissionManager;
 import org.connect.impl.plugin.PluginManager;
 import org.connect.impl.world.WorldManager;
@@ -30,6 +31,8 @@ public class Connect extends ConnectImpl implements Server {
 	private File pluginsDir = new File("./plugins/");
 	private Gamemode defaultGm = Gamemode.SURVIVAL;
 	private String mcVer = "1.7.10";
+	private boolean running = false;
+	private ArrayList<IPlayer> onlinePlayers = new ArrayList<>();
 
 	private ImplClass impl;
 
@@ -62,9 +65,22 @@ public class Connect extends ConnectImpl implements Server {
 		return "Connect Implementation";
 	}
 
+	private IPlayer getPlayerByName(String name) {
+		for (IPlayer pl : onlinePlayers) {
+			if (pl.getName().equalsIgnoreCase(name)) {
+				return pl;
+			}
+		}
+		return null;
+	}
+
 	@Override
 	public IOfflinePlayer getOfflinePlayer(String name) {
-		return null;
+		IPlayer pl = getPlayerByName(name);
+		if (pl != null) {
+			return pl;
+		}
+		return new IOfflinePlayer(name, null);
 	}
 
 	@Override
@@ -99,7 +115,7 @@ public class Connect extends ConnectImpl implements Server {
 
 	@Override
 	public IScheduler getScheduler() {
-		return null;
+		throw new NotCompletedException();
 	}
 
 	@Override
@@ -109,7 +125,7 @@ public class Connect extends ConnectImpl implements Server {
 
 	@Override
 	public IWorldManager getWorldManager() {
-		return null;
+		return wm;
 	}
 
 	@Override
@@ -121,6 +137,7 @@ public class Connect extends ConnectImpl implements Server {
 		logger.i("Loading properties");
 		logger.i("Default game type: " + defaultGm.getName());
 		logger.i("Starting minecraft server on *:" + getPort());
+		running = true;
 		logger.i("This server is running " + getName() + " version " + getVersion() + " (API Version: " + getImplementationVersion() + ")");
 		logger.i("Enabling plugins...");
 		pm.initPlugins(pluginsDir);
@@ -138,6 +155,7 @@ public class Connect extends ConnectImpl implements Server {
 
 	@Override
 	public void shutdown() {
+		getPluginManager().disablePlugins();
 		for (IWorld world : wm.getWorlds()) {
 			wm.unloadWorld(world);
 		}
@@ -148,7 +166,7 @@ public class Connect extends ConnectImpl implements Server {
 		return logger;
 	}
 
-	public void fixDirs() {
+	private void fixDirs() {
 		if (!pluginsDir.exists())
 			pluginsDir.mkdirs();
 	}
@@ -161,6 +179,11 @@ public class Connect extends ConnectImpl implements Server {
 	@Override
 	public ConsoleSender getConsoleSender() {
 		return consoleSender;
+	}
+
+	@Override
+	public boolean isRunning() {
+		return running;
 	}
 
 }
